@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-1"
+  region     = "eu-west-1"
   access_key = var.access_key
   secret_key = var.secret_key
 }
@@ -29,27 +29,27 @@ resource "github_repository" "github-repo-2" {
 }
 
 data "github_repository_file" "index_html" {
-  provider = github 
+  provider   = github
   repository = "whole_site"
-  file = "tech-test/index.html"
+  file       = "tech-test/index.html"
 }
 
 data "github_repository_file" "people_html" {
-  provider = github 
+  provider   = github
   repository = "People"
-  file = "people.html"
+  file       = "people.html"
 }
 
 data "github_repository_file" "article_1" {
-  provider = github 
+  provider   = github
   repository = "marketing"
-  file = "news/article_1.html"
+  file       = "news/article_1.html"
 }
 
 data "github_repository_file" "article_2" {
-  provider = github 
+  provider   = github
   repository = "marketing"
-  file = "news/article_2.html"
+  file       = "news/article_2.html"
 }
 
 
@@ -122,10 +122,10 @@ resource "aws_s3_object" "people_html" {
 }
 
 resource "aws_s3_object" "news" {
-    bucket = aws_s3_bucket.tech_test.id
-    acl    = "public-read"
-    key    = "news/"
-    source = "/dev/null"
+  bucket = aws_s3_bucket.tech_test.id
+  acl    = "public-read"
+  key    = "news/"
+  source = "/dev/null"
 }
 
 resource "aws_s3_object" "article_1_html" {
