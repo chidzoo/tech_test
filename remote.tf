@@ -1,9 +1,7 @@
-#   backend "remote" {
-#     hostname     = "app.terraform.io"
-#     organization = "terraform-cloud-organization-name"
-# 
-#     workspaces {
-#       name = "terraform-cloud-workspace-name"
-#     }
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket = "terraform-rugbaja"
+    key    = "terraform.tfstate"
+    region = "eu-west-1"
+  }
+}

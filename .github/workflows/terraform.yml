@@ -6,6 +6,14 @@ on:
     branches:
     - master
   pull_request:
+  repository_dispatch:
+
+env:
+  ## Sets environment variable
+  TF_VAR_access_key: ${{ secrets.access_key }}
+  TF_VAR_secret_key: ${{ secrets.secret_key }}
+  TF_VAR_token: ${{ secrets.token }}
+
 
 jobs:
   terraform:
@@ -16,23 +24,19 @@ jobs:
       run:
         shell: bash
 
-    # Checkout the repository to the GitHub Actions runner
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1.0.1
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Install Terraform
+      run: sudo apt-get install -y terraform=0.12.31
+
     - name: Terraform Init
       run: terraform init
 
-    # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: terraform fmt -check
 
-    # Terraform validate
     - name: Terraform Validate
       run: terraform validate
 
@@ -46,7 +50,7 @@ jobs:
       env:
         STDOUT: "```${{ steps.plan.outputs.stdout }}```"
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.token }}
         script: |
           github.issues.createComment({
             issue_number: context.issue.number,
@@ -56,5 +60,5 @@ jobs:
           })
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push' || github.event_name == 'repository_dispatch'
       run: terraform apply -auto-approve
